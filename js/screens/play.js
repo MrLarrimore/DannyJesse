@@ -7,9 +7,9 @@ game.PlayScreen = me.ScreenObject.extend({
 		game.data.score = 0;
                 
                 // Loads levels from Tiled.
-                me.levelDirector.loadLevel("level01");
+                me.levelDirector.loadLevel("map");
                 // resets player position.
-                this.resetPlayer(0, 10);
+                this.resetPlayer(20, 8);
                 // resets Game Time Manager.
                 var gameTimerManager = me.pool.pull("GameTimerManager", 0, 0, {});
                 me.game.world.addChild(gameTimerManager, 0);
@@ -62,6 +62,6 @@ game.PlayScreen = me.ScreenObject.extend({
         resetPlayer: function(x, y) {
             // on reset, reset player location.
             game.data.player = me.pool.pull("player", x, y, {});
-                me.game.world.addChild(game.data.player, 10);            
+                me.game.world.addChild(game.data.player, 1000);            
         }
 });

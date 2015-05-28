@@ -6,6 +6,8 @@ game.NewProfile = me.ScreenObject.extend({
 	onResetEvent: function() {	
             // on reset, change screen to new-screen.
 		me.game.world.addChild(new me.Sprite(0, 0, me.loader.getImage("new-screen")), -10);
+                
+                me.audio.playTrack("drums of war", false, null, 0.2);
                 // input and register set to visible.
                 document.getElementById("input").style.visibility = "visible";
                 document.getElementById("register").style.visibility = "visible";
@@ -41,7 +43,9 @@ game.NewProfile = me.ScreenObject.extend({
 	onDestroyEvent: function() {
             // on destroy, set input and register to hidden.
             document.getElementById("input").style.visibility = "hidden";
-            document.getElementById("register").style.visibility = "hidden";      
+            document.getElementById("register").style.visibility = "hidden";  
+            me.audio.stopTrack();
+
 	}
 });
 

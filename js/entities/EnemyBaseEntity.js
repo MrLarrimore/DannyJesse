@@ -1,49 +1,49 @@
-game.EnemyBaseEntity = me.Entity.extend({
-    init: function(x, y, settings) {
-        // Initializes tower hitboxes and image.
-        this._super(me.Entity, "init", [x, y, {
-                image: "tower",
-                width: 100,
-                height: 100,
-                spritewidth: "100",
-                spriteheight: "100",
-                getShape: function() {
-                    return (new me.Rect(0, 0, 100, 70)).toPolygon();
-                }
-            }]);
-        // Inits health, updates, and collisions.
-        this.broken = false;
-        this.health = game.data.enemyBaseHealth;
-        this.alwaysUpdate = false;
-        this.body.onCollision = this.onCollision.bind(this);
-        // adds type to enemy base entities.
-        this.type = "EnemyBaseEntity";
-        // adds animations and sets current one.
-        this.renderable.addAnimation("idle", [0]);
-        this.renderable.addAnimation("broken", [1]);
-        this.renderable.setCurrentAnimation("idle");
-    },
-    update: function(delta) {
-        if (this.health <= 0) {
-            // If health is zero, then win is true and broken is true.
-            this.broken = true;
-            game.data.win = true;
-            // sets current animation to broken.
-            this.renderable.setCurrentAnimation("broken");
-        }
-        // update function.
-        this.body.update(delta);
-        // updates entity and returns true.
-        this._super(me.Entity, "update", [delta]);
-        return true;
-    },
-    onCollision: function() {
-
-    },
-    loseHealth: function() {
-        // health is lost fast.
-        this.health--;
-    }
-});
-
-
+//game.EnemyBaseEntity = me.Entity.extend({
+//    init: function(x, y, settings) {
+//        // Initializes tower hitboxes and image.
+//        this._super(me.Entity, "init", [x, y, {
+//                image: "tower",
+//                width: 100,
+//                height: 100,
+//                spritewidth: "100",
+//                spriteheight: "100",
+//                getShape: function() {
+//                    return (new me.Rect(0, 0, 100, 70)).toPolygon();
+//                }
+//            }]);
+//        // Inits health, updates, and collisions.
+//        this.broken = false;
+//        this.health = game.data.enemyBaseHealth;
+//        this.alwaysUpdate = false;
+//        this.body.onCollision = this.onCollision.bind(this);
+//        // adds type to enemy base entities.
+//        this.type = "EnemyBaseEntity";
+//        // adds animations and sets current one.
+//        this.renderable.addAnimation("idle", [0]);
+//        this.renderable.addAnimation("broken", [1]);
+//        this.renderable.setCurrentAnimation("idle");
+//    },
+//    update: function(delta) {
+//        if (this.health <= 0) {
+//            // If health is zero, then win is true and broken is true.
+//            this.broken = true;
+//            game.data.win = true;
+//            // sets current animation to broken.
+//            this.renderable.setCurrentAnimation("broken");
+//        }
+//        // update function.
+//        this.body.update(delta);
+//        // updates entity and returns true.
+//        this._super(me.Entity, "update", [delta]);
+//        return true;
+//    },
+//    onCollision: function() {
+//
+//    },
+//    loseHealth: function() {
+//        // health is lost fast.
+//        this.health--;
+//    }
+//});
+//
+//

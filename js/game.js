@@ -9,9 +9,9 @@ var game = {
 		score : 0,
                 option1: "",
                 option2: "",
-                enemyBaseHealth: 10,
+                enemyBaseHealth: 1,
                 playerBaseHealth: 10,
-                enemyCreepHealth: 5,
+                enemyCreepHealth: 1,
                 playerCreepHealth: 5,
                 playerHealth: 10,
                 enemyCreepAttack: 1,
@@ -19,8 +19,8 @@ var game = {
                 playerAttack: 1,
                 playerAttackTimer: 1000,
                 creepAttackTimer: 1000,            
-                playerMoveSpeed: 6,
-                creepMoveSpeed: 3,
+                playerMoveSpeed: 3,
+                creepMoveSpeed: 2,
                 gameTimerManager: "",
                 heroDeathManager: "",
                 spearTimer: 15,
@@ -103,7 +103,7 @@ var game = {
                 me.state.set(me.state.SPENDEXP, new game.SpendExp());
                 me.state.set(me.state.NEW, new game.NewProfile());
                 me.state.set(me.state.LOAD, new game.LoadProfile());
-                me.state.set(me.state.CONTROLS, new game.ControlsScreen());
+//                me.state.set(me.state.CONTROLS, new game.ControlsScreen());
 
 
 

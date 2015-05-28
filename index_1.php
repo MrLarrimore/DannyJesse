@@ -34,8 +34,7 @@
                     <!-- Creates buttons for the following. -->
                     <button type="button" id="register">Register</button>
                     <button type="button" id="load">Load</button>
-                    <button type="button" id="mainmenu">Main Menu</button>
-
+                    <button type="button" id="mainmenu">Main Menu</button><br />
                     
                 </form>
 		<!-- melonJS Library -->

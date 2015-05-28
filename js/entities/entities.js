@@ -21,12 +21,12 @@ game.PlayerEntity = me.Entity.extend({
     setSuper: function(x, y) {
         this._super(me.Entity, 'init', [x, y, {
                 image: "player",
-                width: 64,
-                height: 64,
-                spritewidth: "64",
-                spriteheight: "64",
+                width: 25,
+                height: 24,
+                spritewidth: "25",
+                spriteheight: "24",
                 getShape: function() {
-                    return(new me.Rect(0, 0, 64, 64)).toPolygon();
+                    return(new me.Rect(0, 0, 25, 24)).toPolygon();
                 }
             }]);
     },
@@ -40,8 +40,9 @@ game.PlayerEntity = me.Entity.extend({
     
     setAttributes: function() {
         this.health = game.data.playerHealth;
-        this.body.setVelocity(game.data.playerMoveSpeed, 20);
+        this.body.setVelocity(game.data.playerMoveSpeed,  10);
         this.attack = game.data.playerAttack;
+        this.body.gravity = 0;
     },
     
     setFlags: function() {
@@ -52,9 +53,14 @@ game.PlayerEntity = me.Entity.extend({
     },
     
     addAnimation: function() {
-        this.renderable.addAnimation("idle", [78]);
-        this.renderable.addAnimation("walk", [117, 118, 119, 120, 121, 122, 123, 124, 125], 80);
-        this.renderable.addAnimation("attack", [65, 66, 67, 68, 69, 70, 71, 72], 80);
+        this.renderable.addAnimation("idle", [0]);
+        this.renderable.addAnimation("walk", [38, 39], 80);
+        this.renderable.addAnimation("walkup", [61, 62], 80);
+        this.renderable.addAnimation("walkdown", [61, 62], 80);      
+        this.renderable.addAnimation("attack", [23, 24, 25, 26, 27, 28], 80);
+        this.renderable.addAnimation("attackup", [1, 2, 3, 4, 5, 6, 7, 8], 80);
+        this.renderable.addAnimation("attackdown", [61, 62], 80);
+        this.renderable.addAnimation("death", [404, 405, 406, 407], 80);
 
     },
     
@@ -79,6 +85,7 @@ game.PlayerEntity = me.Entity.extend({
     
     checkIfDead: function() {
         if (this.health <= 0) {
+        this.renderable.setCurrentAnimation("death");
             return true;
         }
         return false;
@@ -88,22 +95,28 @@ game.PlayerEntity = me.Entity.extend({
         if (me.input.isKeyPressed("right")) {
             // check for right movement.
             this.moveRight();
-
+ 
         } else if (me.input.isKeyPressed("left")) {
             // check for left movement.
             this.moveLeft();
         } else if (me.input.isKeyPressed("up")) {
             // check for up movement.
             this.moveUp();
+                        
+
         } else if (me.input.isKeyPressed("down")) {
             // check for down movement.
             this.moveDown();
         } else {
             // if no movement, no velocity.
             this.body.vel.x = 0;
+            this.body.vel.y = 0;
         }
         // check if attacking.
         this.attacking = me.input.isKeyPressed("attack");
+        this.attacking = me.input.isKeyPressed("attackup");
+        this.attacking = me.input.isKeyPressed("attackdown");
+
     },
     
     moveRight: function() {
@@ -112,7 +125,7 @@ game.PlayerEntity = me.Entity.extend({
         //me.timer.tick makes the movement look smooth
         this.body.vel.x += this.body.accel.x * me.timer.tick;
         this.facing = "right";
-        this.flipX(true);
+        this.flipX(false);
     },
     
     moveLeft: function() {
@@ -121,7 +134,7 @@ game.PlayerEntity = me.Entity.extend({
         //me.timer.tick makes the movement look smooth
         this.body.vel.x -= this.body.accel.x * me.timer.tick;
         this.facing = "left";
-        this.flipX(false);
+        this.flipX(true);
     },
     
     moveUp: function() {
@@ -142,17 +155,6 @@ game.PlayerEntity = me.Entity.extend({
         this.flipY(false);
     },
     
-    jump: function() {
-        // make sure we are not already jumping or falling
-        if (!this.body.jumping && !this.body.falling) {
-            // set current vel to the maximum defined value
-            // gravity will then do the rest
-            this.body.vel.y = -this.body.maxVel.y * me.timer.tick;
-            // set the jumping flag
-            this.body.jumping = true;
-        }
-    },
-    
     checkAbilityKeys: function() {
         if (me.input.isKeyPressed("skill1")) {
             //this.speedBurst();
@@ -164,8 +166,8 @@ game.PlayerEntity = me.Entity.extend({
     },
     
     throwSpear: function() {
-        console.log(this.now + "this.now" + this.lastSpear + "lastSpear" + game.data.spearTimer + "SpearTimer" + game.data.ability3 + "Ability 3");
-        if((this.now - this.lastSpear) >= game.data.spearTimer*1000 && game.data.ability3 > 0) {
+        console.log(this.now + "this.now" + this.lastSpear + "lastSpear" + game.data.spearTimer + "SpearTimer" + game.data.ability3 + "skill3");
+        if((this.now - this.lastSpear) >= game.data.spearTimer*1000 && game.data.skill3 > 0) {
             // creates Spear entity and updates spear.
             this.lastSpear = this.now;
             var spear = me.pool.pull("spear", this.pos.x, this.pos.y, {}, this.facing);
@@ -195,9 +197,14 @@ game.PlayerEntity = me.Entity.extend({
                 this.renderable.setCurrentAnimation("walk");
 
             }
-        } else if (!this.renderable.isCurrentAnimation("attack")) {
+        }else if (this.body.vel.y !== 0 && !this.renderable.isCurrentAnimation("attack")) {
+            if (!this.renderable.isCurrentAnimation("walkup")) {
+                this.renderable.setCurrentAnimation("walkup");
+        
+        }else if (!this.renderable.isCurrentAnimation("attack")) {
             this.renderable.setCurrentAnimation("idle");
         }
+    }
     },
     
     collideHandler: function(response) {
@@ -239,8 +246,12 @@ game.PlayerEntity = me.Entity.extend({
         var ydif = this.pos.y - response.b.pos.y;
         // stops movement of player.
         this.stopMovement(xdif);
+        this.stopMovement2(ydif);
         // if attacking, attack enemy creep.
         if (this.checkAttack(xdif, ydif)) {
+            this.hitCreep(response);
+        };
+         if (this.checkAttack2(xdif, ydif)) {
             this.hitCreep(response);
         };
         
@@ -260,10 +271,37 @@ game.PlayerEntity = me.Entity.extend({
         }
     },
     
+    stopMovement2: function(ydif) {
+        if (ydif > 0) {
+            if (this.facing === "up") {
+                // if attacking and facing up, stop player.
+                this.body.vel.y = 0;
+            }
+        } else {
+            if (this.facing === "down") {
+                // if attacking and facing down, stop player.
+                this.body.vel.y = 0;
+            }
+        }
+    },
+    
     checkAttack: function(xdif, ydif) {
         if (this.renderable.isCurrentAnimation("attack") && this.now - this.lastHit >= game.data.playerAttackTimer
                 && (Math.abs(ydif) <= 40) &&
                 (((xdif > 0) && this.facing === "left") || ((xdif < 0) && this.facing === "right"))) {
+            // if attacking, and attack timer true, and facing creep, then update hits.
+            this.lastHit = this.now;
+            // return true.
+            return true;
+        }
+        // If not, return false.
+        return false;
+    },
+    
+    checkAttack2: function(xdif, ydif) {
+        if (this.renderable.isCurrentAnimation("attack2") && this.now - this.lastHit >= game.data.playerAttackTimer
+                && (Math.abs(ydif) <= 40) &&
+                (((ydif > 0) && this.facing === "up") || ((ydif < 0) && this.facing === "down"))) {
             // if attacking, and attack timer true, and facing creep, then update hits.
             this.lastHit = this.now;
             // return true.
