@@ -38,7 +38,7 @@ game.SpearThrow = me.Entity.extend({
     },
     
     collideHandeler: function(response){
-        if (response.b.type === "EnemyBase" || response.b.type === "EnemyCreep"){
+        if (response.b.type === "EnemyCreep"){
             // If collision with enemy base or creep, remove health.
             response.b.loseHealth(this.attack);
             
