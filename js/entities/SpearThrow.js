@@ -3,12 +3,12 @@ game.SpearThrow = me.Entity.extend({
         // initailizes function and hitboxes.
         this._super(me.Entity, "init", [x, y, {
                 image: "spear",
-                width: 48,
-                height: 48,
-                spritewidth: "48",
-                spriteheight: "48",
+                width: 25,
+                height: 24,
+                spritewidth: "25",
+                spriteheight: "24",
                 getShape: function() {
-                    return (new me.Rect(0, 0, 48, 48)).toPolygon();
+                    return (new me.Rect(0, 0, 25, 24)).toPolygon();
                 }
             }]);
         // sets updates, abilities, and velocities.
@@ -38,7 +38,7 @@ game.SpearThrow = me.Entity.extend({
     },
     
     collideHandeler: function(response){
-        if (response.b.type === "EnemyBase" || response.b.type === "EnemyCreep"){
+        if (response.b.type === "EnemyCreep"){
             // If collision with enemy base or creep, remove health.
             response.b.loseHealth(this.attack);
             

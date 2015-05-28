@@ -39,7 +39,7 @@ game.SpendGold = Object.extend({
         // updates buy screen and adds screen into game.
         game.data.buyscreen.updateWhenPaused = true;
         game.data.buyscreen.setOpacity(0.8);
-        game.data.player.body.setVelocity(0, 0);
+        game.data.player.body.setVelocity(2, 2);
         me.game.world.addChild(game.data.buyscreen, 34);
         // sets keys and text.
         this.setKeys();
